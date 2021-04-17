@@ -1,0 +1,21 @@
+import binascii
+from scapy.all import *
+
+dsi_data1 = '010100010000000000000002000000000f00'
+dsi_data2 = 'fa163eef81f95098b8d4c2010800450000570d3140006f06de20c120a417ac100f07f8800224fedf575700000001501800c8f18300000300002f2ae00000000000436f6f6b69653a206d737473686173683d41646d696e697374720d0a0100080003000000'
+dsi_data3 = 'fa163e9d5ca55098b8d4c20108004500003a9d254000320652a750524d8bac100f04cd8a022450173a3e00000001501801f6ebc70000000300010000000000000002000000000f00'
+
+
+def transform(raw_log):
+    packet = Ether(binascii.unhexlify(raw_log))
+    payload = ''
+    if packet.haslayer(TCP):
+        payload = packet[TCP].payload
+    elif packet.haslayer(UDP):
+        payload = packet[UDP].payload
+    if payload:
+        return binascii.hexlify(bytes(payload))
+    else:
+        return b''
+
+print(transform(dsi_data3))
